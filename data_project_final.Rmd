@@ -83,11 +83,77 @@ if (!dir.exists("results")) {
 
 ## Get the data
 
-The first dataset describes characteristics of human-tiger conflicts, collected from 1,095
-<Write here a bit about this dataset and put a link to where it is from>
+The [first dataset](https://doi.org/10.7910/DVN/YS0WTE) describes characteristics of human-tiger conflicts, collected from 1,095 participants in the Sundarbans region of West Bengal, India via survey carried out between August 2018 and November 2019.
+
+The following variables are included in this dataset:
+  * Sl. No. (presumably Slot Number/ID)
+  * Time of Attack
+  * Year of Attack
+  * District
+  * Block
+  * Island Name
+  * Gram Panchayat (governing institution of village)
+  * Village Name
+  * Latitude of Village
+  * Longitude of Village
+  * Victim Gender
+  * Victim Age
+  * Primary Occupation of Victim
+  * Primary Occupation_2
+  * Victim Secondary Occupation
+  * Victim Secondary Occupation_2
+  * Victim's Primary Occupation After Attack
+  * Victim's Average Annual Income
+  * Land Owned by Victim (Bighas)
+  * Boat Ownership of Victim
+  * Education Level of Victim
+  * Marital Status of Victim
+  * Number of Dependents in Family of Victim
+  * Religious Background of Victim's Family
+  * Ethnicity of Victim's Family
+  * Permit Holding Status of Victim
+  * Animal Involved in Attack
+  * Sex of Animal (if Identified)
+  * Age Class of Animal (if Identified)
+  * Location of Attack
+  * Substrate Where Attack Occured
+  * Number of Eyewitnesses Present
+  * Outcome of Attack (on Victim)
+  * Position of Victim During Attack
+  * Direction of Attack
+  * Nature of Injury on Victim's Body
+  * Activity of Victim During Attack
+  * Tidal Status During Attack
+  * Distance Body/Victim Was Dragged by Animal
+  * Body/Victim Recovery Time (Hours)
+  * Recieved Medical Aid?
+  * Body Recovery Status
+  * Body of Victim Consumed (Approx %)
+  * PM Conducted Status
+  * Reported to Police
+  * Reported to FD (Forest Department)
+  * If Not, Why Not Reported
+  * Ex Gratia Filed/Not Filed
+  * Ex Gratia Amount Recieved
+  * Perception of Tiger Population in Sundarban (numbers)
+  * Perception of Area covered by the Sundarbans - Sq. Km.
+  * Perception - Environmental Beneficts of Sundarban
+  * Perception - When Did Humans Arrive Here
+  * Perception - Why Tigers Attack Humans
+  * Perception - Why Tigers Attack Humans_2
+  * Perception - What Can Reduce Attacks
+  * perception_awareness_attitude:how_to_reduce_attacks_other
+
+The [second dataset](https://docs.google.com/spreadsheets/d/1G7aOVW9Jfa8vUMYe-YWrQUCyIFWQcj7uvLl7veB1Hzw/edit?usp=sharing) is a ~~much more simple~~ table, recorded by hand using public data from the Wildlife Protection Society of India, found [here](https://www.wpsi-india.org/statistics/index.php).
+
+The following variables are included in this dataset:
+ * year
+ * tigers_killed
 
 ```{r}
-# Read in your dataset(s)
+tiger_conflict_df <- read.csv("data/raw_data/sundarban_tiger_conflict_data.csv")
+
+tiger_poaching_df <- read.csv("data/raw_data/tiger_poaching_data.csv")
 ```
 
 Explore your data here
