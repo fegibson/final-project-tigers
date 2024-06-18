@@ -30,15 +30,13 @@ To complete this project there are a few requirements you will need to fulfill. 
 
 * Characteristics of Human-Tiger Conflicts in Indian Sundarban: https://doi.org/10.7910/DVN/YS0WTE
 (By Chatterjee, Mayukh et al.)
-    + Summary of Data: 
+    + Summary of Data: Survey collecting data from a sample of 1,095 people in the Sundarbans region of West Bengal, India recounting details of  human-tiger conflicts from survivors, relatives, and eyewitnesses, as well as answers to open-ended questions aiming to assess participants' prior knowledge and perception regarding tigers. The survey was carried out between August 2018 and November 2019.
 
 * Wildlife Protection Society of India (WPSI)'s Tiger Poaching Statistics 1994-2023: https://www.wpsi-india.org/statistics/index.php > Tiger Mortality > Tiger Poaching 1994-2023
     + Recreated by hand into a Google Sheet here: https://docs.google.com/spreadsheets/d/1G7aOVW9Jfa8vUMYe-YWrQUCyIFWQcj7uvLl7veB1Hzw/edit?usp=sharing
-    + Summary of Data: 
+    + Summary of Data: Compiled reports of known cases of unnatural tiger deaths caused by poachers across all of India, ranging from the year 1994 to 2023.
 
-<Describe how the data was originally created. If this is data that is part of `datasets` you can use the `?` like so: ` ?datasets::AirPassengers` to see information about the datasets.Otherwise provide a summary based on the source of the data.>
-
-NTS: ideally, find a dataset on tiger prey populations from 1994-2023
+NTS: ideally, find a dataset on tiger prey populations from 1994-2023 and add it here
 
 ## The goal of this analysis
 
@@ -70,6 +68,12 @@ Set up the directories you will need.
 ```{r}
 if (!dir.exists("data")) {
   dir.create("data")
+}
+if (!dir.exists("data/raw_data")) {
+  dir.create("data/raw_data")
+}
+if (!dir.exists("data/tidy_data")) {
+  dir.create("data/tidy_data")
 }
 if (!dir.exists("results")) {
   dir.create("results")
