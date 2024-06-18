@@ -83,6 +83,7 @@ if (!dir.exists("results")) {
 
 ## Get the data
 
+The first dataset describes characteristics of human-tiger conflicts, collected from 1,095
 <Write here a bit about this dataset and put a link to where it is from>
 
 ```{r}
