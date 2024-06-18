@@ -5,4 +5,6 @@ This repository is for hosting and documenting progress related to my final proj
 The folders in this project are:
 
 * _data_ - is the folder where I will put all the data I have collected.
+    + _raw_data_ - original versions of data used will be stored here
+    + _tidy_data_ - cleaned versions of data used will be stored here
 * _results_ - is where I will put the results (tables, graphs, etc.) of my analysis.
