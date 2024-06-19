@@ -38,7 +38,7 @@ To complete this project there are a few requirements you will need to fulfill. 
 
 NTS: ideally, find a dataset on tiger prey populations from 1994-2023 and add it here
 
-## The goal of this analysis
+## The Goal of This Analysis
 
 Since the dawn of human civilization in India, humans have found themselves in conflict with tigers, big cats who have inhabited the land since long before our species took our first steps out of Africa. This conflict was, at one point, so great that we almost hunted the tiger to extinction, leading to it being granted the status of protected species in recent years.
 
@@ -46,22 +46,26 @@ In this project, I set out to answer some questions I've had since learning abou
 
 Or, in a more 'data scientist' way to sum up these questions: "What interspecies and/or environmental variables have had an influence on tigers' disposition towards humans over time?"
 
-## Set up
+## Set Up
 
 Load packages you will need for this analysis.
 
 ```{r}
 install.packages("usethis")
+install.packages("janitor")
+```
 
+```{r}
 library(tidyverse)
 library(readr)
 library(dplyr)
 library(ggplot2)
 library(tidyr)
 library(usethis)
+library(janitor)
 ```
 
-## Set up directories
+## Set Up Directories
 
 Set up the directories you will need.
 
@@ -81,7 +85,7 @@ if (!dir.exists("results")) {
 ```
 
 
-## Get the data
+## Get the Data
 
 The [first dataset](https://doi.org/10.7910/DVN/YS0WTE) describes characteristics of human-tiger conflicts, collected from 1,095 participants in the Sundarbans region of West Bengal, India via survey carried out between August 2018 and November 2019.
 
@@ -151,32 +155,41 @@ The following variables are included in this dataset:
  * tigers_killed
 
 ```{r}
-tiger_conflict_df <- read.csv("data/raw_data/sundarban_tiger_conflict_data.csv")
+tiger_conflict_df <- read_csv("data/raw_data/sundarban_tiger_conflict_data.csv")
 
-tiger_poaching_df <- read.csv("data/raw_data/tiger_poaching_data.csv")
+tiger_poaching_df <- read_csv("data/raw_data/tiger_poaching_data.csv")
 ```
 
-Explore your data here
+## Exploring the Data
 
 ```{r}
+head(tiger_conflict_df)
+```
 
+```{r}
+print(tiger_poaching_df)
 ```
 
 ## Cleaning the data
 
 
 ```{r}
+tiger_conflict_df <- tiger_conflict_df %>% clean_names()
 
+tiger_conflict_df <- tiger_conflict_df %>%
+  rename(activity_of_victim_during_attack = activitiy_of_victim_during_attack) %>% 
+  rename(distance_body_victim_was_dragged_by_animal = distnace_body_victim_was_dragged_by_animal)
+  
 ```
 
-## Plot the data!
+## Plotting the Data!
 
 ```{r}
 ggplot(aes(VARIABLE)) +
   geom_point()
 ```
 
-## Get the stats
+## Getting the Stats
 
 
 ### Conclusion
