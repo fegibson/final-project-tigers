@@ -174,13 +174,23 @@ print(tiger_poaching_df)
 
 
 ```{r}
+# Make column names easier to work with
 tiger_conflict_df <- tiger_conflict_df %>% clean_names()
 
+# Fix typos in column names
 tiger_conflict_df <- tiger_conflict_df %>%
   rename(activity_of_victim_during_attack = activitiy_of_victim_during_attack) %>% 
   rename(distance_body_victim_was_dragged_by_animal = distnace_body_victim_was_dragged_by_animal)
   
 ```
+
+While tiger_conflict_df is rich in variables to explore, a lot of them don't seem to be all that relevant to our analysis. So, we will be selecting the ones we really want to focus on and save them to a separate object with the following code:
+
+```{r}
+conflict_df_clean <- tiger_conflict_df %>% 
+  select(sl_no, year_of_attack, victim_gender, victim_age, permit_holding_status_of_victim, location_of_attack, activity_of_victim_during_attack, body_of_victim_consumed_approx_percent, perception_why_tigers_attack_humans, perception_what_can_reduce_attacks)
+```
+
 
 ## Plotting the Data!
 
