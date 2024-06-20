@@ -46,7 +46,7 @@ In this project, I set out to answer some questions I've had since learning abou
 
 Or, in a more 'data scientist' way to sum up these questions: "What interspecies and/or environmental variables have had an influence on tigers' disposition towards humans over time?"
 
-## Set Up
+## Setting Up
 
 Load packages you will need for this analysis.
 
@@ -65,7 +65,7 @@ library(usethis)
 library(janitor)
 ```
 
-## Set Up Directories
+## Setting Up Directories
 
 Set up the directories you will need.
 
@@ -85,7 +85,7 @@ if (!dir.exists("results")) {
 ```
 
 
-## Get the Data
+## Getting the Data
 
 The [first dataset](https://doi.org/10.7910/DVN/YS0WTE) describes characteristics of human-tiger conflicts, collected from 1,095 participants in the Sundarbans region of West Bengal, India via survey carried out between August 2018 and November 2019.
 
@@ -184,6 +184,13 @@ tiger_conflict_df <- tiger_conflict_df %>%
   
 ```
 
+Don't forget to save this as a file in the tidy_data directory!
+
+```{r}
+write_csv(tiger_conflict_df, "data/tidy_data/tiger_conflict_df.csv")
+```
+
+
 While tiger_conflict_df is rich in variables to explore, a lot of them don't seem to be all that relevant to our analysis. So, we will be selecting the ones we really want to focus on and save them to a separate object with the following code:
 
 ```{r}
@@ -191,6 +198,13 @@ conflict_df_clean <- tiger_conflict_df %>%
   select(sl_no, year_of_attack, victim_gender, victim_age, permit_holding_status_of_victim, location_of_attack, activity_of_victim_during_attack, body_of_victim_consumed_approx_percent, perception_why_tigers_attack_humans, perception_what_can_reduce_attacks)
 ```
 
+We'll also want to reduce our number of observations to only include those that fall within the range of years in tiger_poaching_df, so we can compare the information in both data frames more easily. We can achieve this by using an inner join:
+
+```{r}
+tiger_df_combined <- conflict_df_clean %>% inner_join(tiger_poaching_df, by = join_by(year_of_attack == year))
+```
+
+Now that our data frames are combined, we finally arrive at the fun part...
 
 ## Plotting the Data!
 
@@ -207,7 +221,9 @@ ggplot(aes(VARIABLE)) +
 Write up your thoughts about this data science project here and answer the following questions:
 
 - What did you find out in regards to your original question?
+
 - What exceptions or caveats do you have in regards to your analysis you did?
+
 - What follow up questions do you have?
 
 ## Print out session info
