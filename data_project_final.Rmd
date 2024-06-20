@@ -175,9 +175,11 @@ print(tiger_poaching_df)
 
 ```{r}
 # Make column names easier to work with
+
 tiger_conflict_df <- tiger_conflict_df %>% clean_names()
 
 # Fix typos in column names
+
 tiger_conflict_df <- tiger_conflict_df %>%
   rename(activity_of_victim_during_attack = activitiy_of_victim_during_attack) %>% 
   rename(distance_body_victim_was_dragged_by_animal = distnace_body_victim_was_dragged_by_animal)
@@ -208,10 +210,50 @@ Now that our data frames are combined, we finally arrive at the fun part...
 
 ## Plotting the Data!
 
+# Why Do Tigers Attack Humans?
+
 ```{r}
-ggplot(aes(VARIABLE)) +
-  geom_point()
+# Separate observations with multiple answers into different rows, so there aren't a thousand groups on the X-axis
+
+conflict_df_clean %>% separate_longer_delim(perception_why_tigers_attack_humans, delim = " ")
 ```
+
+
+# Humans Attacked/Killed By Tigers vs. Tigers Killed By Humans
+
+To make things easier, let's count the observations in the 'year_of_attack' column and save them in a separate object. 
+
+```{r}
+humans_attacked_per_year <- tiger_conflict_df %>% count(year_of_attack)
+
+humans_attacked_per_year <- humans_attacked_per_year %>%
+  rename(year = year_of_attack) %>% 
+  rename(humans_attacked = n)
+```
+
+Then, we're going to join this new object with 'tiger_poaching_df' and save it as another new object.
+
+```{r}
+human_tiger_attacks <- inner_join(humans_attacked_per_year, tiger_poaching_df, by = "year")
+```
+
+Now, let's compare the number of humans attacked by tigers and tigers killed by humans from 1994-2019:
+
+```{r}
+colors <- c("tigers_killed" = "orange", "humans_attacked" = "blue")
+
+human_tiger_attacks %>%
+  ggplot(aes(x = year)) +
+  geom_line(aes(y = tigers_killed, color = "tigers_killed"), size = 1.5) +
+  geom_line(aes(y = humans_attacked, color = "humans_attacked"), size = 1.5) +
+  labs(title = "Human-Tiger Conflicts Over Time (1994-2019)",
+       x = "year",
+       y = "reported incidents",
+       color = "Legend") +
+  scale_color_manual(values = colors)
+  
+```
+
 
 ## Getting the Stats
 
