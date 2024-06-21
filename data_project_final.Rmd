@@ -456,11 +456,31 @@ Absolutely beautiful. Muah. Chef's kiss.
 
 Write up your thoughts about this data science project here and answer the following questions:
 
-- What did you find out in regards to your original question?
+**- What did you find out in regards to your original question?**
 
-- What exceptions or caveats do you have in regards to your analysis you did?
+I've found that us humans could very well be to blame for the tiger's aggressiveness towards our species. It is unlikely that tigers are natural predators for humans. Instead, human-caused environmental factors and counter-aggression seem to have driven tigers to become desperate. Habitat fragmentation, due in part to human colonization and global warming, means tigers cannot freely roam between territories, leading to tigers being pushed from their homes or trapped in areas with little prey and/or shelter.
 
-- What follow up questions do you have?
+In regards to human-tiger conflicts, I observed an interesting pattern in my second plot, where attacks/kills on both sides would increase and decrease almost during the same points in time. The p-value is also nothing to scoff at. Though other factors are also at play, as shown in the third plot, I think it's safe to say that tigers do, indeed, believe in the Golden Rule.
+
+At least, the 'treat others based on how they treat you, since that is how they wish to be treated' part.
+
+Obviously, hunting and poaching is one of these factors. Over-hunting of wild prey leaves none left for the tigers, same goes for poaching, and a tiger needs to eat something to survive. Why not the big, clumsy ape parading around in its territory?
+
+In conclusion, based on this analysis, I believe tigers are not the ruthless, man-eating predators we've been commonly conditioned to see them as, but due to our actions they have become starved of land, desperate for food, and weary of humans entering their territories.
+
+And, above all else, they need our help.
+
+**- What exceptions or caveats do you have in regards to your analysis you did?**
+
+I sadly wasn't able to find any open data sets with information on wild prey populations in the Sundarbans region, though I think the data from the conservation awareness survey makes up for it somewhat.
+
+Also, the human-tiger conflicts chart is actually humans attacked/killed in *just* the Sundarbans region of India/Bangladesh vs. tigers killed in all of India, but I'd still have expected the numbers to be flipped if tigers were actually one of our natural predators. I couldn't find anything for tigers killed in the Sundarbans only.
+
+**- What follow up questions do you have?**
+
+How have tiger populations changed since 2019? Are the problems tigers face in India the same as tiger species found in China? Are human males more at risk of being attacked by a tiger than human females?
+
+Does wearing a mask really deter a tiger from attacking, as some people in the human-tiger conflict survey suggested? (Disclaimer: This is a joke. The methods required for gathering such data would be highly unethical and inhumane!)
 
 ## Print out session info
 
