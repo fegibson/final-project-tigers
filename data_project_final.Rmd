@@ -54,6 +54,7 @@ Load packages you will need for this analysis.
 ```{r}
 install.packages("usethis")
 install.packages("janitor")
+install.packages("ggthemes")
 ```
 
 ```{r}
@@ -64,6 +65,7 @@ library(ggplot2)
 library(tidyr)
 library(usethis)
 library(janitor)
+library(ggthemes)
 ```
 
 ## Setting Up Directories
@@ -242,9 +244,7 @@ Now that our data frames are combined, we finally arrive at the fun part...
 
 conflict_df_clean <- 
   conflict_df_clean %>% 
-  separate_longer_delim(perception_why_tigers_attack_humans, delim = " ") %>%
-  mutate(perception_why_tigers_attack_humans =
-         as.factor(perception_why_tigers_attack_humans))
+  separate_longer_delim(perception_why_tigers_attack_humans, delim = " ")
 ```
 
 ```{r}
@@ -271,17 +271,17 @@ levels()
 
 ```{r}
 # color friendly palette from http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/:
-cbPalette <- c("#663300", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+cbPalette <- c("#663300", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#000000")
 
 conflict_df_clean %>% 
   ggplot(aes(perception_why_tigers_attack_humans, 
              fill = perception_why_tigers_attack_humans)) +
   geom_bar() +
   theme_minimal() +
-  theme(axis.title.x = element_blank(),
+  theme(axis.title = element_blank(),
         axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
-        axis.title.y = element_blank()) +
+        axis.line = element_line(color = "black")) +
   scale_fill_manual(name = "Why Do Tigers Attack Humans?", 
                     labels = c("Act of God(s)", "Humans Go Into Forests",
                                  "Lots of Tigers", "No Food in Forests",
@@ -289,6 +289,14 @@ conflict_df_clean %>%
                                  "NA"),
                     values=cbPalette) +
   scale_y_continuous(expand = c(0, 0), limits = c(0, 800))
+
+# save plot as png:
+ggsave(
+  "why_tigers_attack.png",
+  plot = last_plot(),
+  path = "results/",
+  dpi = 300,
+  bg = "white")
 ```
 
 
@@ -324,12 +332,125 @@ human_tiger_attacks %>%
        y = "reported incidents",
        color = "Legend") +
   scale_color_manual(values = colors)
-  
+
+# save plot as png:
+ggsave(
+  "human-tiger_conflicts.png",
+  plot = last_plot(),
+  path = "results/",
+  dpi = 300,
+  bg = "white")
+```
+
+# What Are The Main Threats Contributing to Tiger Population Decline?
+
+```{r}
+# Similar set-up to our first plot
+conservation_awareness_df <- conservation_awareness_df %>% clean_names()
+
+tiger_main_threats <- 
+  conservation_awareness_df %>% 
+  select(what_are_the_main_threats_contributing_to_tiger_population_decline_you_can_select_one_or_more)
+
+tiger_main_threats <- rename(tiger_main_threats, "main_threats_tiger_pop" = "what_are_the_main_threats_contributing_to_tiger_population_decline_you_can_select_one_or_more")
+```
+
+```{r}
+tiger_main_threats <- tiger_main_threats %>% 
+  separate_longer_delim(main_threats_tiger_pop, delim = ", ") %>% 
+  separate_longer_delim(main_threats_tiger_pop, delim = ",")
+```
+
+```{r}
+tiger_main_threats <- tiger_main_threats %>% mutate_all(na_if,"")
+```
+
+```{r}
+as.factor(tiger_main_threats$main_threats_tiger_pop) %>% 
+levels()
+```
+
+```{r}
+tiger_main_threats %>% 
+  count(main_threats_tiger_pop) %>% 
+  ggplot(aes(reorder(main_threats_tiger_pop, n), n, fill = main_threats_tiger_pop)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  scale_fill_manual(name = "Main Threats to Tiger Populations",
+                    labels = c("Climate Change", "Other", "Habitat Fragmentation", "Human-Wildlife Conflict", "Hunting and Poaching", "Lack of Local Participation", "Lack of Proper Systems", "Poor Program/Scheme Implementation", "Villagers Disturbing Forest"), values = cbPalette) +
+  theme_classic() +
+  theme(axis.text = element_blank(),
+        axis.title = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line.x = element_blank())
+
+# save plot as png:
+ggsave(
+  "main_threats.png",
+  plot = last_plot(),
+  path = "results/",
+  dpi = 300,
+  bg = "white")
+```
+
+# What complications are conservation efforts facing?
+
+```{r}
+conservation_complications <-
+  conservation_awareness_df %>%
+  select(according_to_you_what_can_be_the_most_prominent_reason_behind_less_effectiveness_of_the_policies) %>% 
+  rename(why_policies_less_effective = according_to_you_what_can_be_the_most_prominent_reason_behind_less_effectiveness_of_the_policies) %>% 
+  separate_longer_delim(why_policies_less_effective, delim = " and ")
+```
+
+```{r}
+conservation_complications <-
+  conservation_complications %>% 
+  mutate(why_policies_less_effective = 
+    str_to_sentence(conservation_complications$why_policies_less_effective)
+  ) %>% 
+  mutate(why_policies_less_effective =
+           str_replace(why_policies_less_effective, "Lack of backbone to support organisation working for tiger conservation", "Lack of support for organizations")) %>% 
+  mutate(why_policies_less_effective =
+           str_replace(why_policies_less_effective, "Less awareness among people", "Lack of awareness among people"))
+```
+
+```{r}
+as.factor(conservation_complications$why_policies_less_effective) %>% 
+levels()
+```
+
+
+```{r}
+conservation_complications %>% 
+  ggplot(aes(factor(1), fill = why_policies_less_effective)) +
+  geom_bar(width = 1, color = "white") +
+  coord_polar(theta = "y") +
+  geom_col(aes(x=0,y=0)) +
+  theme_void() +
+  theme(plot.background = element_rect(color = "black"),
+        plot.margin = unit(c(0,1,0,0),"cm")) +
+  scale_fill_manual(name = "Conservation Complications", values = cbPalette)
+
+# save plot as png:
+ggsave(
+  "conservation_complications.png",
+  plot = last_plot(),
+  path = "results/",
+  dpi = 300,
+  bg = "white")
 ```
 
 
 ## Getting the Stats
 
+There's only two numeric variables we could test, so...
+
+```{r}
+cor.test(tiger_df_combined$year_of_attack, tiger_df_combined$tigers_killed)
+```
+
+Absolutely beautiful. Muah. Chef's kiss.
 
 ### Conclusion
 
