@@ -28,15 +28,16 @@ To complete this project there are a few requirements you will need to fulfill. 
 
 ## Data Sources
 
-* Characteristics of Human-Tiger Conflicts in Indian Sundarban: https://doi.org/10.7910/DVN/YS0WTE
+* **Characteristics of Human-Tiger Conflicts in Indian Sundarban:** https://doi.org/10.7910/DVN/YS0WTE
 (By Chatterjee, Mayukh et al.)
     + Summary of Data: Survey collecting data from a sample of 1,095 people in the Sundarbans region of West Bengal, India recounting details of  human-tiger conflicts from survivors, relatives, and eyewitnesses, as well as answers to open-ended questions aiming to assess participants' prior knowledge and perception regarding tigers. The survey was carried out between August 2018 and November 2019.
 
-* Wildlife Protection Society of India (WPSI)'s Tiger Poaching Statistics 1994-2023: https://www.wpsi-india.org/statistics/index.php > Tiger Mortality > Tiger Poaching 1994-2023
-    + Recreated by hand into a Google Sheet here: https://docs.google.com/spreadsheets/d/1G7aOVW9Jfa8vUMYe-YWrQUCyIFWQcj7uvLl7veB1Hzw/edit?usp=sharing
+* **Wildlife Protection Society of India (WPSI)'s Tiger Poaching Statistics 1994-2023:** https://www.wpsi-india.org/statistics/index.php > Tiger Mortality > Tiger Poaching 1994-2023
+    + Recreated by hand into a Google Sheet [here](https://docs.google.com/spreadsheets/d/1G7aOVW9Jfa8vUMYe-YWrQUCyIFWQcj7uvLl7veB1Hzw/edit?usp=sharing).
     + Summary of Data: Compiled reports of known cases of unnatural tiger deaths caused by poachers across all of India, ranging from the year 1994 to 2023.
 
-NTS: ideally, find a dataset on tiger prey populations from 1994-2023 and add it here
+* **Tiger Conservation Awareness Survey** https://www.kaggle.com/datasets/kawalmeetsingh/tiger-conservation-data/data
+    + Summary of Data: Survey sampling ~121 people, measuring their awareness of tiger conservation reserves and the main threats contributing to tiger population decline in India.
 
 ## The Goal of This Analysis
 
@@ -153,11 +154,35 @@ The [second dataset](https://docs.google.com/spreadsheets/d/1G7aOVW9Jfa8vUMYe-YW
 The following variables are included in this dataset:
  * year
  * tigers_killed
+ 
+ Last but not least, we will be using survey data found on [Kaggle](https://www.kaggle.com/datasets/kawalmeetsingh/tiger-conservation-data/data) focusing on awareness of tiger conservation reserves and threats.
+ 
+ The variables included in this dataset are:
+  * Email Address
+  * Name
+  * Age
+  * District
+  * State
+  * Are you aware about the “Project Tiger”?
+  * Do you know the Tiger conservation reserves present in your State?
+  * If yes, participants were asked to name any of the reserves.
+  * What are the main threats contributing to tiger population decline?
+  * Which threat do you think is the most prominent one?
+  * Are you aware about "Save the Tiger" and "Wildlife Week"?
+  * Can you name any organizations or initiatives working towards tiger conservation?
+  * Have you ever encountered a tiger in an urban or a suburban area?
+  * What will be your response/action in such a scenario?
+  * In your opinion, how does tiger conservation benefit local communities and the economy?
+  * Suppose that you spotted a poacher's trap in the forest. What would you do?
+  * How much would you rate the effectiveness of government policies related to tiger conservation?
+  * According to you, what can be the most prominent reason behind less effectiveness of the policies?
 
 ```{r}
 tiger_conflict_df <- read_csv("data/raw_data/sundarban_tiger_conflict_data.csv")
 
 tiger_poaching_df <- read_csv("data/raw_data/tiger_poaching_data.csv")
+
+conservation_awareness_df <- read_csv("data/raw_data/tiger_conservation_awareness_survey.csv")
 ```
 
 ## Exploring the Data
@@ -215,15 +240,55 @@ Now that our data frames are combined, we finally arrive at the fun part...
 ```{r}
 # Separate observations with multiple answers into different rows, so there aren't a thousand groups on the X-axis
 
-tiger_attack_why <- conflict_df_clean %>% 
-  separate_longer_delim(perception_why_tigers_attack_humans, delim = " ") %>% 
-  mutate(perception_why_tigers_attack_humans = as.factor(perception_why_tigers_attack_humans))
-
-# also saving as ANOTHER object because i don't have time for ERRORS!!!!! we need to see the levels in order to fix some rows that decided to get Funky(tm) while separating
+conflict_df_clean <- 
+  conflict_df_clean %>% 
+  separate_longer_delim(perception_why_tigers_attack_humans, delim = " ") %>%
+  mutate(perception_why_tigers_attack_humans =
+         as.factor(perception_why_tigers_attack_humans))
 ```
 
 ```{r}
-levels(tiger_attack_why$perception_why_tigers_attack_humans)
+# Fix some observations that decided to get Funky(tm) while separating
+
+conflict_df_clean <- replace(conflict_df_clean, conflict_df_clean=='', NA)
+
+conflict_df_clean <- 
+  conflict_df_clean %>% 
+  mutate(conflict_df_clean, perception_why_tigers_attack_humans =
+    gsub("^((?!(gods_act_dakshin_rai|lot_of_tigers|other|they_are_man-eaters|humans_go_into_forests|no_food_in_forests|tides)).)*$",
+         "gods_act_dakshin_rai",
+         perception_why_tigers_attack_humans,
+         perl = TRUE)
+    )
+```
+
+```{r}
+# Check that it worked using the following code
+
+as.factor(conflict_df_clean$perception_why_tigers_attack_humans) %>% 
+levels()
+```
+
+```{r}
+# color friendly palette from http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/:
+cbPalette <- c("#663300", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+conflict_df_clean %>% 
+  ggplot(aes(perception_why_tigers_attack_humans, 
+             fill = perception_why_tigers_attack_humans)) +
+  geom_bar() +
+  theme_minimal() +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.title.y = element_blank()) +
+  scale_fill_manual(name = "Why Do Tigers Attack Humans?", 
+                    labels = c("Act of God(s)", "Humans Go Into Forests",
+                                 "Lots of Tigers", "No Food in Forests",
+                                 "Other", "They Are Man-Eaters", "Tides",
+                                 "NA"),
+                    values=cbPalette) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 800))
 ```
 
 
@@ -252,8 +317,8 @@ colors <- c("tigers_killed" = "orange", "humans_attacked" = "blue")
 
 human_tiger_attacks %>%
   ggplot(aes(x = year)) +
-  geom_line(aes(y = tigers_killed, color = "tigers_killed"), size = 1.5) +
-  geom_line(aes(y = humans_attacked, color = "humans_attacked"), size = 1.5) +
+  geom_line(aes(y = tigers_killed, color = "tigers_killed"), linewidth = 1.5) +
+  geom_line(aes(y = humans_attacked, color = "humans_attacked"), linewidth = 1.5) +
   labs(title = "Human-Tiger Conflicts Over Time (1994-2019)",
        x = "year",
        y = "reported incidents",
