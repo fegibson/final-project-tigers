@@ -215,7 +215,15 @@ Now that our data frames are combined, we finally arrive at the fun part...
 ```{r}
 # Separate observations with multiple answers into different rows, so there aren't a thousand groups on the X-axis
 
-conflict_df_clean %>% separate_longer_delim(perception_why_tigers_attack_humans, delim = " ")
+tiger_attack_why <- conflict_df_clean %>% 
+  separate_longer_delim(perception_why_tigers_attack_humans, delim = " ") %>% 
+  mutate(perception_why_tigers_attack_humans = as.factor(perception_why_tigers_attack_humans))
+
+# also saving as ANOTHER object because i don't have time for ERRORS!!!!! we need to see the levels in order to fix some rows that decided to get Funky(tm) while separating
+```
+
+```{r}
+levels(tiger_attack_why$perception_why_tigers_attack_humans)
 ```
 
 
